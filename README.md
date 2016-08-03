@@ -5,7 +5,7 @@
 Client library for the [Disqus API](https://disqus.com/api/docs/) and Real-Time comments. :sparkles:
 
 ```js
-import NeoDisqus from './lib/index'
+import NeoDisqus from 'neo-disqus'
 
 const client = new NeoDisqus({
   access_token: '',

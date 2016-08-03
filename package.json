@@ -1,6 +1,6 @@
 {
   "name": "neo-disqus",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Disqus API client library for node.js",
   "license": "MIT",
   "repository": "jlobos/neo-disqus",
