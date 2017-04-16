@@ -1,13 +1,11 @@
+const request = require('request-promise')
+const WebSocket = require('ws')
 
-import WebSocket from 'ws'
-import request from 'request'
-import extend from 'deep-extend'
+const { version } = require('./package.json')
 
-import { version } from '../package.json'
-
-class NeoDisqus {
+module.exports = class {
   constructor (options) {
-    this.options = extend({
+    this.options = Object.assign({
       access_token: null,
       api_key: null,
       api_secret: null,
@@ -32,42 +30,31 @@ class NeoDisqus {
     } : { }
 
     this.request = request.defaults(
-      extend(this.options.request_options, qs)
+      Object.assign(this.options.request_options, qs)
     )
   }
 
-  _r (method, path, params, callback) {
+  _r (method, path, params = {}, callback) {
     if (typeof params === 'function') {
       callback = params
-      params = {}
     }
 
     let payload = {
       uri: `${this.options.rest_base}${path}`,
-      method: method
+      method: method,
+      json: true
     }
 
     if (method === 'GET') { payload.qs = params }
     if (method === 'POST') { payload.formData = params }
 
-    this.request(payload, (error, response, data) => {
-      if (error) return callback(error, data)
+    const promise = this.request(payload)
 
-      try { data = JSON.parse(data) } catch (parseError) {
-        return callback(
-          new Error(`Status Code: ${response.statusCode}`),
-          data
-        )
-      }
+    if (callback && typeof callback === 'function') {
+      promise.then(callback.bind(null, null), callback)
+    }
 
-      if (data.code !== 0) {
-        callback(data.response, data)
-      } else if (response.statusCode !== 200) {
-        callback(new Error(`Status Code: ${response.statusCode}`), data)
-      } else {
-        callback(null, data)
-      }
-    })
+    return promise
   }
 
   get (url, params, callback) { return this._r('GET', url, params, callback) }
@@ -84,7 +71,4 @@ class NeoDisqus {
       }
     })
   }
-
 }
-
-module.exports = NeoDisqus
