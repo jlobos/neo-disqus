@@ -4,42 +4,54 @@
 
 Client library for the [Disqus API](https://disqus.com/api/docs/) and Real-Time comments. :sparkles:
 
-```js
-import NeoDisqus from 'neo-disqus'
+## Install
 
-const client = new NeoDisqus({
+```
+$ npm install --save neo-disqus
+```
+
+## Usage
+
+```js
+const Disqus = require('neo-disqus')
+
+const client = new Disqus({
   access_token: '',
   api_key: '',
   api_secret: ''
 })
 
 const params = { forum: 'jaidefinichon', limit: 2 }
-client.get('forums/listThreads', params, (error, posts) => {
-  if (error) return console.error(error)
+
+// Callback
+client.get('forums/listThreads', params, (err, posts) => {
+  console.log(err, posts)
+})
+
+// Promise
+client.get('forums/listThreads', params).then(posts => {
   console.log(posts)
 })
 ```
 
-## Installation
-
-```
-$ npm i neo-disqus
-```
-
 ## REST API
 
-You simply need to pass the endpoint and parameters to one of convenience methods.  Take a look at the [documentation site](https://disqus.com/api/docs/) to reference available endpoints.
+You simply need to pass the endpoint and parameters to one of convenience methods. Take a look at the [documentation site](https://disqus.com/api/docs/) to reference available endpoints.
 
 ```js
+// Callback
 client.get(path, params, callback)
 client.post(path, params, callback)
+
+// Promise
+client.get(path, params).then().catch()
+client.post(path, params).then().catch()
 ```
 
 Example, [get list of trending threads](https://disqus.com/api/docs/trends/listThreads/):
 
 ```js
 client.get('trends/listThreads', (error, trending) => {
-  if (error) return console.error(error)
   console.log(trending)
 })
 ```
@@ -68,9 +80,6 @@ client.get('forums/listThreads', params, (e, lastThreads) => {
 })
 ```
 
-## Testing
+## License
 
-```
-$ npm install
-$ npm test
-```
+MIT
