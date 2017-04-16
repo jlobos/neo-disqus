@@ -1,9 +1,7 @@
-
 import test from 'ava'
-import nock from 'nock'
-import NeoDisqus from '../lib/index'
+import NeoDisqus from './index'
 
-import { version } from '../package.json'
+import { version } from './package.json'
 
 let defaults = {}
 
@@ -54,27 +52,4 @@ test('accepts and overrides options', t => {
     client.options.request_options.headers.Accept,
     options.request_options.headers.Accept
   )
-})
-
-test.cb('has pre-configured request object', t => {
-  const client = new NeoDisqus({
-    request_options: {
-      headers: {
-        foo: 'bar'
-      }
-    }
-  })
-
-  t.true(client.hasOwnProperty('request'))
-
-  nock('http://neo.disqus').get('/').reply(200)
-
-  client.request.get('http://neo.disqus/', (e, r) => {
-    const headers = r.request.headers
-    t.true(headers.hasOwnProperty('foo'))
-    t.is(headers.foo, 'bar')
-
-    t.deepEqual(headers['User-Agent'], 'neo-disqus/' + version)
-    t.end()
-  })
 })
